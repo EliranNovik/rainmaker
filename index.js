@@ -7,42 +7,34 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.post('/api/proxy', async (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    country,
+    message,
+    sid = Date.now().toString()
+  } = req.body;
+
+  const url = new URL('https://www.rainmakerqueen.com/hooks/catch/');
+  url.searchParams.append('uid', 'fxSOVhSeeRs9');
+  url.searchParams.append('sid', sid);
+  url.searchParams.append('lead_source', '30018');
+  url.searchParams.append('name', name || '');
+  url.searchParams.append('phone', phone || '');
+  url.searchParams.append('email', email || '');
+  url.searchParams.append('topic', country || '');
+  url.searchParams.append('desc', message || '');
+  url.searchParams.append('ref_url', 'https://heritage-based-european-citizenship.lawoffice.org.il/');
+
   try {
-    const { name, email, phone, country, message, sid } = req.body;
-
-    const params = new URLSearchParams({
-      uid: 'fxSOVhSeeRs9',
-      sid: sid || '',
-      name: name || '',
-      topic: country || '',
-      desc: message || '',
-      email: email || '',
-      phone: phone || '',
-      ref_url: 'https://heritage-based-european-citizenship.lawoffice.org.il',
-      user_data: JSON.stringify({
-        form: 'WordPress Landing Page',
-        source: 'Eligibility Checker'
-      })
-    });
-
-    const rainmakerUrl = `https://www.rainmakerqueen.com/hooks/catch/?${params.toString()}`;
-    console.log('🌐 Sending to Rainmaker:', rainmakerUrl);
-
-    const response = await axios.get(rainmakerUrl);
+    const response = await axios.get(url.toString());
     console.log('✅ Rainmaker responded with:', response.status);
-
     res.status(200).send('OK');
-  } catch (error) {
-    console.error('❌ Rainmaker error:', error.message);
-    if (error.response) {
-      console.error('↩ Response body:', error.response.status, error.response.data);
-    }
+  } catch (err) {
+    console.error('❌ Rainmaker error:', err.message);
     res.status(500).send('Proxy error');
   }
-});
-
-app.get('/', (req, res) => {
-  res.send('✅ Rainmaker proxy is live');
 });
 
 app.listen(PORT, () => {
