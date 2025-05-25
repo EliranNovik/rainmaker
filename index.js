@@ -22,7 +22,6 @@ app.post('/api/proxy', async (req, res) => {
   url.searchParams.append('lead_source', '30018');
   url.searchParams.append('name', name || '');
   url.searchParams.append('phone', phone || '');
-  url.searchParams.append('email', email || '');
   url.searchParams.append('topic', country || '');
   url.searchParams.append('desc', message || '');
   url.searchParams.append('ref_url', 'https://heritage-based-european-citizenship.lawoffice.org.il/');
