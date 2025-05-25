@@ -10,21 +10,20 @@ app.post('/api/proxy', async (req, res) => {
   try {
     const { name, email, phone, country, message, sid } = req.body;
 
-    console.log('📩 Received from CF7:', req.body);
-
     const params = new URLSearchParams({
       uid: 'fxSOVhSeeRs9',
-      sid: sid || '',
-      name: name || '',
-      topic: country || '',
-      desc: message || '',
-      email: email || '',
-      phone: phone || '',
-      '30018': ''
+      sid: encodeURIComponent(sid || ''),
+      name: encodeURIComponent(name || ''),
+      topic: encodeURIComponent(country || ''),
+      desc: encodeURIComponent(message || ''),
+      email: encodeURIComponent(email || ''),
+      phone: encodeURIComponent(phone || ''),
+      ref_url: encodeURIComponent('https://heritage-based-european-citizenship.lawoffice.org.il'), // optional
+      user_data: encodeURIComponent(JSON.stringify({ from: 'WordPress Landing Form' })) // optional
     });
 
     const rainmakerUrl = `https://www.rainmakerqueen.com/hooks/catch/?${params.toString()}`;
-    console.log('🔁 Forwarding GET to Rainmaker:', rainmakerUrl);
+    console.log('🌐 Forwarding GET to Rainmaker:', rainmakerUrl);
 
     const response = await axios.get(rainmakerUrl);
     console.log('✅ Rainmaker responded with status:', response.status);
