@@ -12,34 +12,37 @@ app.post('/api/proxy', async (req, res) => {
 
     const params = new URLSearchParams({
       uid: 'fxSOVhSeeRs9',
-      sid: encodeURIComponent(sid || ''),
-      name: encodeURIComponent(name || ''),
-      topic: encodeURIComponent(country || ''),
-      desc: encodeURIComponent(message || ''),
-      email: encodeURIComponent(email || ''),
-      phone: encodeURIComponent(phone || ''),
-      ref_url: encodeURIComponent('https://heritage-based-european-citizenship.lawoffice.org.il'), // optional
-      user_data: encodeURIComponent(JSON.stringify({ from: 'WordPress Landing Form' })) // optional
+      sid: sid || '',
+      name: name || '',
+      topic: country || '',
+      desc: message || '',
+      email: email || '',
+      phone: phone || '',
+      ref_url: 'https://heritage-based-european-citizenship.lawoffice.org.il',
+      user_data: JSON.stringify({
+        form: 'WordPress Landing Page',
+        source: 'Eligibility Checker'
+      })
     });
 
     const rainmakerUrl = `https://www.rainmakerqueen.com/hooks/catch/?${params.toString()}`;
-    console.log('🌐 Forwarding GET to Rainmaker:', rainmakerUrl);
+    console.log('🌐 Sending to Rainmaker:', rainmakerUrl);
 
     const response = await axios.get(rainmakerUrl);
-    console.log('✅ Rainmaker responded with status:', response.status);
+    console.log('✅ Rainmaker responded with:', response.status);
 
     res.status(200).send('OK');
   } catch (error) {
-    console.error('❌ Error sending to Rainmaker:', error.message);
+    console.error('❌ Rainmaker error:', error.message);
     if (error.response) {
-      console.error('↩ Rainmaker response:', error.response.status, error.response.data);
+      console.error('↩ Response body:', error.response.status, error.response.data);
     }
     res.status(500).send('Proxy error');
   }
 });
 
 app.get('/', (req, res) => {
-  res.send('✅ Rainmaker proxy backend is live!');
+  res.send('✅ Rainmaker proxy is live');
 });
 
 app.listen(PORT, () => {
